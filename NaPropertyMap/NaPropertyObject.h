@@ -6,6 +6,7 @@
 #include <iostream>
 #include <variant>
 #include <map>
+#include <wtypes.h>
 
 struct NaPropertyInfo;
 
@@ -27,6 +28,13 @@ using NaPropertySetter = int(NaPropertyObjectBase::*)(NaVariant);
 struct NaPropertyInfo
 {
 	std::string name_;
+	int vt_;
+	NaVariant defaultValue_;
+	wchar_t** typeNameList_;
+	std::string group_;
+	bool useExtraEditor_;
+	int minValue_;
+	int maxValue_;
 	NaPropertyGetter getter_;
 	NaPropertySetter setter_;
 };
@@ -44,15 +52,59 @@ using NaPropertyMap = std::map<std::string, NaPropertyInfo>;
 	using _this_class = _class; \
 	NaPropertyMap _class::_class##PropertyMap_{ 
 
-#define PROP_STR(_prop) \
+#define PROP_GROUP(_prop) \
+	{ #_prop, { #_prop, VT_EMPTY }},
+
+#define PROP_STR(_prop, _default) \
 	{ \
 		#_prop, \
 		{ \
 			#_prop, \
+			VT_LPWSTR, \
+			L###_default, \
+			nullptr, \
+			"", \
+			false, \
+			0, \
+			0, \
 			(static_cast<NaPropertyGetter>(&_this_class::get_##_prop)), \
 			(static_cast<NaPropertySetter>(&_this_class::set_##_prop)), \
 		} \
-	}
+	},
+
+#define PROP_INT(_prop, _default) \
+	{ \
+		#_prop, \
+		{ \
+			#_prop, \
+			VT_I4, \
+			(int)_default, \
+			nullptr, \
+			"", \
+			false, \
+			0, \
+			0, \
+			(static_cast<NaPropertyGetter>(&_this_class::get_##_prop)), \
+			(static_cast<NaPropertySetter>(&_this_class::set_##_prop)), \
+		} \
+	},
+
+#define PROP_FLOAT(_prop, _default) \
+	{ \
+		#_prop, \
+		{ \
+			#_prop, \
+			VT_R4, \
+			(float)_default, \
+			nullptr, \
+			"", \
+			false, \
+			0, \
+			0, \
+			(static_cast<NaPropertyGetter>(&_this_class::get_##_prop)), \
+			(static_cast<NaPropertySetter>(&_this_class::set_##_prop)), \
+		} \
+	},
 
 #define END_IMPL_PROPERTY_MAP(_class) \
 	}; 	
