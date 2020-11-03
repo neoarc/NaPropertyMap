@@ -10,14 +10,14 @@
 
 struct NaPropertyInfo;
 
-using NaPropertyMap = std::map<std::string, NaPropertyInfo>;
+using NaPropertyMap = std::map<std::wstring, NaPropertyInfo>;
 using NaVariant = std::variant<std::wstring, double, float, int, bool>;
 
 class NaPropertyObjectBase
 {
 public:
-	NaVariant GetProperty(std::string name);
-	int SetProperty(std::string name, NaVariant value);
+	NaVariant GetProperty(std::wstring name);
+	int SetProperty(std::wstring name, NaVariant value);
 
 	virtual NaPropertyMap* GetPropertyMap() { return nullptr; }
 };
@@ -27,11 +27,11 @@ using NaPropertySetter = int(NaPropertyObjectBase::*)(NaVariant);
 
 struct NaPropertyInfo
 {
-	std::string name_;
+	std::wstring name_;
 	int vt_;
 	NaVariant defaultValue_;
 	wchar_t** typeNameList_;
-	std::string group_;
+	std::wstring group_;
 	bool useExtraEditor_;
 	int minValue_;
 	int maxValue_;
@@ -39,7 +39,7 @@ struct NaPropertyInfo
 	NaPropertySetter setter_;
 };
 
-using NaPropertyMap = std::map<std::string, NaPropertyInfo>;
+using NaPropertyMap = std::map<std::wstring, NaPropertyInfo>;
 
 #define DECL_PROPERTY_MAP(_class) \
 	static NaPropertyMap _class##PropertyMap_; \
@@ -53,17 +53,17 @@ using NaPropertyMap = std::map<std::string, NaPropertyInfo>;
 	NaPropertyMap _class::_class##PropertyMap_{ 
 
 #define PROP_GROUP(_prop) \
-	{ #_prop, { #_prop, VT_EMPTY }},
+	{ L###_prop, { L###_prop, VT_EMPTY }},
 
 #define PROP_STR(_prop, _default) \
 	{ \
-		#_prop, \
+		L###_prop, \
 		{ \
-			#_prop, \
+			L###_prop, \
 			VT_LPWSTR, \
-			L###_default, \
+			(std::wstring)L##_default, \
 			nullptr, \
-			"", \
+			L"", \
 			false, \
 			0, \
 			0, \
@@ -74,13 +74,13 @@ using NaPropertyMap = std::map<std::string, NaPropertyInfo>;
 
 #define PROP_INT(_prop, _default) \
 	{ \
-		#_prop, \
+		L###_prop, \
 		{ \
-			#_prop, \
+			L###_prop, \
 			VT_I4, \
 			(int)_default, \
 			nullptr, \
-			"", \
+			L"", \
 			false, \
 			0, \
 			0, \
@@ -91,13 +91,13 @@ using NaPropertyMap = std::map<std::string, NaPropertyInfo>;
 
 #define PROP_FLOAT(_prop, _default) \
 	{ \
-		#_prop, \
+		L###_prop, \
 		{ \
-			#_prop, \
+			L###_prop, \
 			VT_R4, \
 			(float)_default, \
 			nullptr, \
-			"", \
+			L"", \
 			false, \
 			0, \
 			0, \

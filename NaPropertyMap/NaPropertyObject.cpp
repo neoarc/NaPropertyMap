@@ -1,6 +1,6 @@
 #include "NaPropertyObject.h"
 
-NaVariant NaPropertyObjectBase::GetProperty(std::string name)
+NaVariant NaPropertyObjectBase::GetProperty(std::wstring name)
 {
 	auto propMap = GetPropertyMap();
 	auto it = propMap->find(name);
@@ -13,7 +13,7 @@ NaVariant NaPropertyObjectBase::GetProperty(std::string name)
 	return nullptr;
 }
 
-int NaPropertyObjectBase::SetProperty(std::string name, NaVariant value)
+int NaPropertyObjectBase::SetProperty(std::wstring name, NaVariant value)
 {
 	auto propMap = GetPropertyMap();
 	auto it = propMap->find(name);
