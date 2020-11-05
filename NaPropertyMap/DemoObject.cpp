@@ -2,9 +2,13 @@
 
 // Implement part
 BEGIN_IMPL_PROPERTY_MAP(DemoObject)
-	PROP_STR(name, "")
-	PROP_INT(age, 0)
-	PROP_FLOAT(weight, 60.0f)
+	PROP_GROUP(personality, "Personality")
+		PROP_STR(name, "")
+		PROP_INT(age, 0)
+		PROP_FLOAT(weight, 60.0f)
+	PROP_GROUP(clothColor, "Cloth Color")
+		PROP_STR(shirtsColor, "black")
+		PROP_STR(pantsColor, "blue")
 END_IMPL_PROPERTY_MAP(DemoObject)
 
 // name
@@ -46,4 +50,29 @@ int DemoObject::set_weight(NaVariant val)
 	return 0;
 }
 
+// shirtsColor
+NaVariant DemoObject::get_shirtsColor()
+{
+	NaVariant var = shirtsColor_;
+	return std::move(var);
+}
+
+int DemoObject::set_shirtsColor(NaVariant val)
+{
+	shirtsColor_ = std::get<std::wstring>(val);
+	return 0;
+}
+
+// pantsColor
+NaVariant DemoObject::get_pantsColor()
+{
+	NaVariant var = pantsColor_;
+	return std::move(var);
+}
+
+int DemoObject::set_pantsColor(NaVariant val)
+{
+	pantsColor_ = std::get<std::wstring>(val);
+	return 0;
+}
 
