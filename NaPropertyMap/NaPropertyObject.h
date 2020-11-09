@@ -5,6 +5,7 @@
 
 #include <variant>
 #include <map>
+#include <vector>
 #include <wtypes.h>
 
 enum class NaResult : int
@@ -14,6 +15,7 @@ enum class NaResult : int
 	RefreshSelf,
 	RefreshAll,
 
+	NotFound,
 	NotImpl,
 };
 
@@ -41,7 +43,7 @@ struct NaPropertyInfo
 	std::wstring name_;
 	int vt_;
 	NaVariant defaultValue_;
-	wchar_t** typeNameList_;
+	std::vector<std::wstring> valueNameList_; // Pre-defined name list
 	std::wstring group_;
 	bool useExtraEditor_;
 	int minValue_;
@@ -61,7 +63,7 @@ public:
 	NaPropertyGroupBuilder& operator=(std::initializer_list<NaPropertyInfo> data);
 	operator NaPropertyMap() const;
 
-	protected:
+protected:
 	NaPropertyMap map_;
 };
 
@@ -77,14 +79,28 @@ public:
 	NaPropertyMap _class::_class##PropertyMap_ = NaPropertyGroupBuilder{ 
 
 #define PROP_GROUP(_prop, _displayName) \
-	{ L"_group" L###_prop, VT_EMPTY, 0, nullptr, L##_displayName, false, 0, 0, nullptr, nullptr },
+	{ L"_group" L###_prop, VT_EMPTY, 0, std::vector<std::wstring>(), L##_displayName, false, 0, 0, nullptr, nullptr },
 
 #define PROP_T(_prop, _vt, _defaultWithCast) \
 	{ \
 		L###_prop, \
 		_vt, \
 		_defaultWithCast, \
-		nullptr, \
+		std::vector<std::wstring>(), \
+		L"", \
+		false, \
+		0, \
+		0, \
+		(static_cast<NaPropertyGetter>(&_this_class::get_##_prop)), \
+		(static_cast<NaPropertySetter>(&_this_class::set_##_prop)), \
+	},
+
+#define PROP_T_ENUM(_prop, _vt, _defaultWithCast, _enum) \
+	{ \
+		L###_prop, \
+		_vt, \
+		_defaultWithCast, \
+		_enum, \
 		L"", \
 		false, \
 		0, \
@@ -98,6 +114,9 @@ public:
 #define PROP_UINT(_prop, _default) PROP_T(_prop, VT_UI4, (int)_default)
 #define PROP_FLOAT(_prop, _default) PROP_T(_prop, VT_R4, (float)_default)
 #define PROP_BOOL(_prop, _default) PROP_T(_prop, VT_BOOL, (bool)_default)
+
+#define PROP_STR_ENUM(_prop, _default, _enum) PROP_T_ENUM(_prop, VT_LPWSTR, (std::wstring)L##_default, _enum)
+#define PROP_INT_ENUM(_prop, _default, _enum) PROP_T_ENUM(_prop, VT_I4, (int)_default, _enum)
 
 #define END_IMPL_PROPERTY_MAP(_class) \
 	}; 	
