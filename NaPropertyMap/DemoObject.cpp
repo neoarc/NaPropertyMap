@@ -12,67 +12,67 @@ BEGIN_IMPL_PROPERTY_MAP(DemoObject)
 END_IMPL_PROPERTY_MAP(DemoObject)
 
 // name
-NaVariant DemoObject::get_name()
+IMPL_PROPERTY_GETTER(DemoObject, name)
 {
 	NaVariant var = name_;
 	return std::move(var);
 }
 
-int DemoObject::set_name(NaVariant val)
+IMPL_PROPERTY_SETTER(DemoObject, name)
 {
-	name_ = std::get<std::wstring>(val);
-	return 0;
+	name_ = std::get<std::wstring>(value);
+	return NaResult::Success;
 }
 
 // age
-NaVariant DemoObject::get_age()
+IMPL_PROPERTY_GETTER(DemoObject, age)
 {
 	NaVariant var = age_;
 	return std::move(var);
 }
 
-int DemoObject::set_age(NaVariant val)
+IMPL_PROPERTY_SETTER(DemoObject, age)
 {
-	age_ = std::get<int>(val);
-	return 0;
+	age_ = std::get<int>(value);
+	return NaResult::Success;
 }
 
 // weight
-NaVariant DemoObject::get_weight()
+IMPL_PROPERTY_GETTER(DemoObject, weight)
 {
 	NaVariant var = weight_;
 	return std::move(var);
 }
 
-int DemoObject::set_weight(NaVariant val)
+IMPL_PROPERTY_SETTER(DemoObject, weight)
 {
-	weight_ = std::get<float>(val);
-	return 0;
+	weight_ = std::get<float>(value);
+	return NaResult::Success;
 }
 
 // shirtsColor
-NaVariant DemoObject::get_shirtsColor()
+IMPL_PROPERTY_GETTER(DemoObject, shirtsColor)
 {
 	NaVariant var = shirtsColor_;
 	return std::move(var);
 }
 
-int DemoObject::set_shirtsColor(NaVariant val)
+IMPL_PROPERTY_SETTER(DemoObject, shirtsColor)
 {
-	shirtsColor_ = std::get<std::wstring>(val);
-	return 0;
+	shirtsColor_ = std::get<std::wstring>(value);
+	return NaResult::Success;
 }
 
 // pantsColor
-NaVariant DemoObject::get_pantsColor()
+IMPL_PROPERTY_GETTER(DemoObject, pantsColor)
 {
 	NaVariant var = pantsColor_;
 	return std::move(var);
 }
 
-int DemoObject::set_pantsColor(NaVariant val)
+IMPL_PROPERTY_SETTER(DemoObject, pantsColor)
 {
-	pantsColor_ = std::get<std::wstring>(val);
-	return 0;
+	pantsColor_ = std::get<std::wstring>(value);
+	return NaResult::Success;
 }
 

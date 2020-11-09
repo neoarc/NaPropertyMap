@@ -3,28 +3,38 @@
 //
 #pragma once
 
-#include <iostream>
 #include <variant>
 #include <map>
-#include <unordered_map>
 #include <wtypes.h>
+
+enum class NaResult : int
+{
+	Fail = -1,
+	Success = 0,
+	RefreshSelf,
+	RefreshAll,
+
+	NotImpl,
+};
+
+using NaPropertySetterResult = NaResult;
 
 struct NaPropertyInfo;
 
-using NaPropertyMap = std::unordered_map<std::wstring, NaPropertyInfo>;
+using NaPropertyMap = std::map<std::wstring, NaPropertyInfo>;
 using NaVariant = std::variant<bool, int, unsigned int, float, double, std::wstring>;
 
 class NaPropertyObjectBase
 {
 public:
 	NaVariant GetProperty(std::wstring name);
-	int SetProperty(std::wstring name, NaVariant value);
+	NaPropertySetterResult SetProperty(std::wstring name, NaVariant value);
 
 	virtual NaPropertyMap* GetPropertyMap() { return nullptr; }
 };
 
 using NaPropertyGetter = NaVariant(NaPropertyObjectBase::*)(void);
-using NaPropertySetter = int(NaPropertyObjectBase::*)(NaVariant);
+using NaPropertySetter = NaPropertySetterResult(NaPropertyObjectBase::*)(NaVariant);
 
 struct NaPropertyInfo
 {
@@ -40,7 +50,7 @@ struct NaPropertyInfo
 	NaPropertySetter setter_;
 };
 
-using NaPropertyMap = std::unordered_map<std::wstring, NaPropertyInfo>;
+using NaPropertyMap = std::map<std::wstring, NaPropertyInfo>;
 
 class NaPropertyGroupBuilder
 {
@@ -60,7 +70,7 @@ public:
 	virtual NaPropertyMap* GetPropertyMap() { return &_class::_class##PropertyMap_; }
 
 #define DECL_PROP(_prop) \
-	NaVariant get_##_prop(); int set_##_prop(NaVariant val)
+	NaVariant get_##_prop(); NaPropertySetterResult set_##_prop(NaVariant val)
 
 #define BEGIN_IMPL_PROPERTY_MAP(_class) \
 	using _this_class = _class; \
@@ -96,12 +106,5 @@ public:
 	NaVariant _class::get_##_prop()
 
 #define IMPL_PROPERTY_SETTER(_class, _prop) \
-	int _class::set_##_prop(NaVariant value)
-
-
-
-
-
-
-
+	NaPropertySetterResult _class::set_##_prop(NaVariant value)
 

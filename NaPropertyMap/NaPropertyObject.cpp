@@ -47,7 +47,7 @@ NaVariant NaPropertyObjectBase::GetProperty(std::wstring name)
 	return nullptr;
 }
 
-int NaPropertyObjectBase::SetProperty(std::wstring name, NaVariant value)
+NaResult NaPropertyObjectBase::SetProperty(std::wstring name, NaVariant value)
 {
 	auto propMap = GetPropertyMap();
 	auto it = propMap->find(name);
@@ -57,6 +57,6 @@ int NaPropertyObjectBase::SetProperty(std::wstring name, NaVariant value)
 		auto result = (this->*setter)(value);
 		return result;
 	}
-	return 0;
+	return NaResult::Success;
 }
 
