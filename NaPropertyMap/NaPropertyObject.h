@@ -1,4 +1,5 @@
 //
+// PropertyMap interfaces
 // 2020.10.26 neoarc; 2nd gen PropertyMap
 //
 #pragma once
@@ -41,6 +42,7 @@ using NaPropertySetter = NaPropertySetterResult(NaPropertyObjectBase::*)(NaVaria
 struct NaPropertyInfo
 {
 	std::wstring name_;
+	std::wstring displayName_;
 	int vt_;
 	NaVariant defaultValue_;
 	std::vector<std::wstring> valueNameList_; // Pre-defined name list
@@ -79,25 +81,14 @@ protected:
 	NaPropertyMap _class::_class##PropertyMap_ = NaPropertyGroupBuilder{ 
 
 #define PROP_GROUP(_prop, _displayName) \
-	{ L"_group" L###_prop, VT_EMPTY, 0, std::vector<std::wstring>(), L##_displayName, false, 0, 0, nullptr, nullptr },
+	{ L"_group" L###_prop, L###_prop, VT_EMPTY, 0, std::vector<std::wstring>(), L##_displayName, false, 0, 0, nullptr, nullptr },
 
-#define PROP_T(_prop, _vt, _defaultWithCast) \
+#define PROP_EMPTY_ENUM	std::vector<std::wstring>()
+
+#define PROP_T(_prop, _displayName, _vt, _defaultWithCast, _enum) \
 	{ \
 		L###_prop, \
-		_vt, \
-		_defaultWithCast, \
-		std::vector<std::wstring>(), \
-		L"", \
-		false, \
-		0, \
-		0, \
-		(static_cast<NaPropertyGetter>(&_this_class::get_##_prop)), \
-		(static_cast<NaPropertySetter>(&_this_class::set_##_prop)), \
-	},
-
-#define PROP_T_ENUM(_prop, _vt, _defaultWithCast, _enum) \
-	{ \
-		L###_prop, \
+		_displayName, \
 		_vt, \
 		_defaultWithCast, \
 		_enum, \
@@ -109,14 +100,26 @@ protected:
 		(static_cast<NaPropertySetter>(&_this_class::set_##_prop)), \
 	},
 
-#define PROP_STR(_prop, _default) PROP_T(_prop, VT_LPWSTR, (std::wstring)L##_default)
-#define PROP_INT(_prop, _default) PROP_T(_prop, VT_I4, (int)_default)
-#define PROP_UINT(_prop, _default) PROP_T(_prop, VT_UI4, (int)_default)
-#define PROP_FLOAT(_prop, _default) PROP_T(_prop, VT_R4, (float)_default)
-#define PROP_BOOL(_prop, _default) PROP_T(_prop, VT_BOOL, (bool)_default)
+// Default macros
+#define PROP_STR(_prop, _default) PROP_T(_prop, L"", VT_LPWSTR, (std::wstring)L##_default, PROP_EMPTY_ENUM)
+#define PROP_INT(_prop, _default) PROP_T(_prop, L"",  VT_I4, (int)_default, PROP_EMPTY_ENUM)
+#define PROP_UINT(_prop, _default) PROP_T(_prop, L"", VT_UI4, (int)_default, PROP_EMPTY_ENUM)
+#define PROP_FLOAT(_prop, _default) PROP_T(_prop, L"", VT_R4, (float)_default, PROP_EMPTY_ENUM)
+#define PROP_BOOL(_prop, _default) PROP_T(_prop, L"", VT_BOOL, (bool)_default, PROP_EMPTY_ENUM)
 
-#define PROP_STR_ENUM(_prop, _default, _enum) PROP_T_ENUM(_prop, VT_LPWSTR, (std::wstring)L##_default, _enum)
-#define PROP_INT_ENUM(_prop, _default, _enum) PROP_T_ENUM(_prop, VT_I4, (int)_default, _enum)
+// Default + DisplayName
+#define PROP_D_STR(_prop, _displayName, _default) PROP_T(_prop, L##_displayName, VT_LPWSTR, (std::wstring)L##_default, PROP_EMPTY_ENUM)
+#define PROP_D_INT(_prop, _displayName, _default) PROP_T(_prop, L##_displayName,  VT_I4, (int)_default, PROP_EMPTY_ENUM)
+#define PROP_D_UINT(_prop, _displayName, _default) PROP_T(_prop, L##_displayName, VT_UI4, (int)_default, PROP_EMPTY_ENUM)
+#define PROP_D_FLOAT(_prop, _displayName, _default) PROP_T(_prop, L##_displayName, VT_R4, (float)_default, PROP_EMPTY_ENUM)
+#define PROP_D_BOOL(_prop, _displayName, _default) PROP_T(_prop, L##_displayName, VT_BOOL, (bool)_default, PROP_EMPTY_ENUM)
+
+// Enumeration types
+#define PROP_STR_ENUM(_prop, _default, _enum) PROP_T(_prop, L"", VT_LPWSTR, (std::wstring)L##_default, _enum)
+#define PROP_INT_ENUM(_prop, _default, _enum) PROP_T(_prop, L"", VT_I4, (int)_default, _enum)
+
+#define PROP_D_STR_ENUM(_prop, _displayName, _default, _enum) PROP_T(_prop, L##_displayName, VT_LPWSTR, (std::wstring)L##_default, _enum)
+#define PROP_D_INT_ENUM(_prop, _displayName, _default, _enum) PROP_T(_prop, L##_displayName, VT_I4, (int)_default, _enum)
 
 #define END_IMPL_PROPERTY_MAP(_class) \
 	}; 	
