@@ -54,6 +54,8 @@ NaResult NaPropertyObjectBase::SetProperty(std::wstring name, NaVariant value)
 	if (it != propMap->end())
 	{
 		auto &setter = it->second.setter_;
+		if (setter == nullptr)
+			return NaResult::ReadOnly;
 		auto result = (this->*setter)(value);
 		return result;
 	}
