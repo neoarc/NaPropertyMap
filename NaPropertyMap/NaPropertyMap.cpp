@@ -10,9 +10,8 @@ int main()
 	a.name_ = L"ObjA";
 
 	auto propMap = a.GetPropertyMap();
-	for (auto &propIt : *propMap)
+	for (auto &[propName, propInfo] : *propMap)
 	{
-		auto &propInfo = propIt.second;
 		wcout << L"[Prop] " << propInfo.name_.c_str() << L"\n";
 	}
 	

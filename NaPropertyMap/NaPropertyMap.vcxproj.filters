@@ -24,12 +24,18 @@
     <ClCompile Include="DemoObject.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="NaCommon.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="NaPropertyObject.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="DemoObject.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="NaCommon.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

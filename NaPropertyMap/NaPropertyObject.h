@@ -9,6 +9,8 @@
 #include <vector>
 #include <wtypes.h>
 
+#include "NaCommon.h"
+
 enum class NaResult : int
 {
 	Fail = -1,
@@ -37,6 +39,7 @@ public:
 	NaPropertySetterResult SetProperty(std::wstring name, NaVariant value);
 
 	virtual NaPropertyMap* GetPropertyMap() { return nullptr; }
+	virtual std::vector<std::wstring> GetPropertyValueNameList(std::wstring name) { return {}; }
 };
 
 using NaPropertyGetter = NaVariant(NaPropertyObjectBase::*)(void);
@@ -124,31 +127,37 @@ protected:
 		nullptr, \
 	},
 
+#if defined(USE_CHECKBOX_FOR_BOOL)
+#	define VT_BOOL_T	VT_ETC_BOOL
+#else
+#	define VT_BOOL_T	VT_BOOL
+#endif
+
 // Default macros
 #define PROP_STR(_prop, _default)	PROP_T(_prop, L"", VT_LPWSTR, (std::wstring)L##_default, PROP_EMPTY_ENUM)
 #define PROP_INT(_prop, _default)	PROP_T(_prop, L"",  VT_I4, (int)_default, PROP_EMPTY_ENUM)
 #define PROP_UINT(_prop, _default)	PROP_T(_prop, L"", VT_UI4, (int)_default, PROP_EMPTY_ENUM)
 #define PROP_FLOAT(_prop, _default) PROP_T(_prop, L"", VT_R4, (float)_default, PROP_EMPTY_ENUM)
-#define PROP_BOOL(_prop, _default)	PROP_T(_prop, L"", VT_BOOL, (bool)_default, PROP_EMPTY_ENUM)
+#define PROP_BOOL(_prop, _default)	PROP_T(_prop, L"", VT_BOOL_T, (bool)_default, PROP_EMPTY_ENUM)
 
 #define PROP_RO_STR(_prop, _default)	PROP_T_RO(_prop, L"", VT_LPWSTR, (std::wstring)L##_default, PROP_EMPTY_ENUM)
 #define PROP_RO_INT(_prop, _default)	PROP_T_RO(_prop, L"",  VT_I4, (int)_default, PROP_EMPTY_ENUM)
 #define PROP_RO_UINT(_prop, _default)	PROP_T_RO(_prop, L"", VT_UI4, (int)_default, PROP_EMPTY_ENUM)
 #define PROP_RO_FLOAT(_prop, _default)	PROP_T_RO(_prop, L"", VT_R4, (float)_default, PROP_EMPTY_ENUM)
-#define PROP_RO_BOOL(_prop, _default)	PROP_T_RO(_prop, L"", VT_BOOL, (bool)_default, PROP_EMPTY_ENUM)
+#define PROP_RO_BOOL(_prop, _default)	PROP_T_RO(_prop, L"", VT_BOOL_T, (bool)_default, PROP_EMPTY_ENUM)
 
 // Default + DisplayName
 #define PROP_D_STR(_prop, _displayName, _default)	PROP_T(_prop, L##_displayName, VT_LPWSTR, (std::wstring)L##_default, PROP_EMPTY_ENUM)
 #define PROP_D_INT(_prop, _displayName, _default)	PROP_T(_prop, L##_displayName,  VT_I4, (int)_default, PROP_EMPTY_ENUM)
 #define PROP_D_UINT(_prop, _displayName, _default)	PROP_T(_prop, L##_displayName, VT_UI4, (int)_default, PROP_EMPTY_ENUM)
 #define PROP_D_FLOAT(_prop, _displayName, _default) PROP_T(_prop, L##_displayName, VT_R4, (float)_default, PROP_EMPTY_ENUM)
-#define PROP_D_BOOL(_prop, _displayName, _default)	PROP_T(_prop, L##_displayName, VT_BOOL, (bool)_default, PROP_EMPTY_ENUM)
+#define PROP_D_BOOL(_prop, _displayName, _default)	PROP_T(_prop, L##_displayName, VT_BOOL_T, (bool)_default, PROP_EMPTY_ENUM)
 
 #define PROP_RO_D_STR(_prop, _displayName, _default)	PROP_T_RO(_prop, L##_displayName, VT_LPWSTR, (std::wstring)L##_default, PROP_EMPTY_ENUM)
 #define PROP_RO_D_INT(_prop, _displayName, _default)	PROP_T_RO(_prop, L##_displayName,  VT_I4, (int)_default, PROP_EMPTY_ENUM)
 #define PROP_RO_D_UINT(_prop, _displayName, _default)	PROP_T_RO(_prop, L##_displayName, VT_UI4, (int)_default, PROP_EMPTY_ENUM)
 #define PROP_RO_D_FLOAT(_prop, _displayName, _default)	PROP_T_RO(_prop, L##_displayName, VT_R4, (float)_default, PROP_EMPTY_ENUM)
-#define PROP_RO_D_BOOL(_prop, _displayName, _default)	PROP_T_RO(_prop, L##_displayName, VT_BOOL, (bool)_default, PROP_EMPTY_ENUM)
+#define PROP_RO_D_BOOL(_prop, _displayName, _default)	PROP_T_RO(_prop, L##_displayName, VT_BOOL_T, (bool)_default, PROP_EMPTY_ENUM)
 
 // Enumeration types
 #define PROP_STR_ENUM(_prop, _default, _enum) PROP_T(_prop, L"", VT_LPWSTR, (std::wstring)L##_default, _enum)
@@ -162,6 +171,9 @@ protected:
 
 #define PROP_RO_D_STR_ENUM(_prop, _displayName, _default, _enum) PROP_T_RO(_prop, L##_displayName, VT_LPWSTR, (std::wstring)L##_default, _enum)
 #define PROP_RO_D_INT_ENUM(_prop, _displayName, _default, _enum) PROP_T_RO(_prop, L##_displayName, VT_I4, (int)_default, _enum)
+
+// Just single button command type
+#define PROP_COMMAND(_prop, _displayName) PROP_T(_prop, L##_displayName, VT_ETC_BUTTON, (std::wstring)L"", PROP_EMPTY_ENUM)
 
 #define END_IMPL_PROPERTY_MAP(_class) \
 	}; 	
